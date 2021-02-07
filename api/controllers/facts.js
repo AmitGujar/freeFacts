@@ -1,5 +1,6 @@
 const Fact = require("../models/facts");
 const mongoose = require("mongoose");
+
 const getRandomFacts = async (req, res, next) => {
   try {
     const facts = await Fact.aggregate([{ $sample: { size: 1 } }]);

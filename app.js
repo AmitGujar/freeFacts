@@ -4,6 +4,7 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const factRoutes = require("./api/routes/facts")
+require("dotenv").config();
 
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -22,7 +23,7 @@ app.use((req, res, next) => {
   next();
 });
 
-mongoose.connect("mongodb+srv://amit:amit@facts-data.qznzj.mongodb.net/facts_data?retryWrites=true&w=majority", {
+mongoose.connect(process.env.DATABASE, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
