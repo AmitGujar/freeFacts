@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/6e3f4e4e-8cf0-4b12-9dfb-9afbb5d9d562/resourceGroups/freeFacts/providers/Microsoft.Web/sites/freeFacts",
+    "appService.deploySubpath": "."
+}
