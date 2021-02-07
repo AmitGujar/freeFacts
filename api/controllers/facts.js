@@ -32,7 +32,7 @@ const getAllFacts = async (req, res, next) => {
 
 const createFacts = async (req, res, next) => {
   try {
-    const fact = await Fact.find({ name: req.body.name });
+    const fact = await Fact.find({ factname: req.body.factname });
     if (fact.length >= 1) {
       return res.status(409).json({
         message: "This fact already exists, add something new",
@@ -40,7 +40,7 @@ const createFacts = async (req, res, next) => {
     } else {
       const fact = new Fact({
         _id: mongoose.Types.ObjectId(),
-        name: req.body.name,
+        factname: req.body.factname,
       });
       const savedFact = await fact.save();
       res.status(200).json({
