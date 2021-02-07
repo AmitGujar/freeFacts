@@ -31,5 +31,5 @@ jobs:
       with:
         app-name: 'freefacts'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_44472189c2ad45b5924a987e79f1ca75 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_0946efb8b3094e169eef2b54ef05ae5d }}
         package: .
