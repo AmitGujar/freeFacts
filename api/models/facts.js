@@ -5,7 +5,7 @@ const mongoosePaginate = require("mongoose-paginate-v2");
 
 const factSchema = mongoose.Schema ({
     _id: mongoose.Schema.Types.ObjectId,
-    factname: String
+    name: String
 });
 
 factSchema.plugin(aggregatePaginate);
