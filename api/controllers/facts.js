@@ -16,10 +16,12 @@ const getRandomFacts = async (req, res, next) => {
 const getAllFacts = async (req, res, next) => {
   try {
     const facts = await Fact.find().select("_id name");
+    const showfacts = await Fact.find().limit(10).select("_id name");
     res.status(200).json({
       count: facts.length,
+      page: 1,
       All_facts: {
-        facts,
+        showfacts,
       },
     });
   } catch (err) {
