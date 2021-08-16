@@ -4,13 +4,15 @@ A REST API for facts
 
 Exclusivly built this for [Bink Chrome Extension](https://github.com/AmitGujar/Bink-Chrome-Extension) project and decided to publish for others to use as well. The database currently includes more than 5000 facts all around the world.
 
+## Note - You won't see more than 10 facts on page if you click on url. If you want all facts in your application then you should use npm package. 
+
 ## Install NPM package
 
 ```
 npm install freefactsdk
 ```
 
-[Documentation for NPM package](https://github.com/Amit/freeFactsNPM)
+[Documentation for NPM package](https://github.com/AmitGujar/allfacts)
 
 ## Table of Contents
 
