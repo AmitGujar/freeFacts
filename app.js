@@ -1,14 +1,14 @@
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
-const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const factRoutes = require("./api/routes/facts")
+const userRoutes = require("./api/routes/user");
 require("dotenv").config();
 
 app.use(morgan("dev"));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -25,12 +25,14 @@ app.use((req, res, next) => {
 
 mongoose.connect(process.env.DATABASE, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useCreateIndex: true
 }).then(() => {
     console.log('Connection Established....');
 });
 
 app.use("/facts", factRoutes);
+app.use("/user", userRoutes);
 
 app.use((req, res, next) => {
   const error = new Error("Not Found");
