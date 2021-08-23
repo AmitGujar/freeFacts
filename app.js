@@ -2,9 +2,14 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 const mongoose = require("mongoose");
+const http = require("http");
 const factRoutes = require("./api/routes/facts")
 const userRoutes = require("./api/routes/user");
 require("dotenv").config();
+
+setInterval(function() {
+    http.get("https://freefacts.herokuapp.com/facts");
+}, 300000); // every 5 minutes (300000)
 
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: false }));
