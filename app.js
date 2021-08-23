@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 const mongoose = require("mongoose");
-const http = require("http");
+const https = require("https");
 const factRoutes = require("./api/routes/facts")
 const userRoutes = require("./api/routes/user");
 require("dotenv").config();
