@@ -9,7 +9,7 @@ require("dotenv").config();
 
 setInterval(function() {
     https.get("https://freefacts.herokuapp.com/facts");
-}, 300000); // every 5 minutes (300000)
+}, 3000000); // every 5 minutes (300000)
 
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: false }));
