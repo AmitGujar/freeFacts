@@ -7,10 +7,6 @@ const factRoutes = require("./api/routes/facts")
 const userRoutes = require("./api/routes/user");
 require("dotenv").config();
 
-// setInterval(function() {
-//     https.get("https://freefacts.herokuapp.com/facts");
-// }, 3000000); // every 5 minutes (300000)
-
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -28,7 +24,18 @@ app.use((req, res, next) => {
   next();
 });
 
-mongoose.connect(process.env.DATABASE, {
+const mongodbConfig = {
+  host: process.env.MONGODB_HOST || 'localhost',
+  options: process.env.MONGODB_OPTIONS || ''
+};
+
+const mongodbUsername = process.env.MONGODB_USERNAME;
+const mongodbPassword = process.env.MONGODB_PASSWORD;
+
+const mongoURL = `mongodb+srv://${mongodbUsername}:${mongodbPassword}@${mongodbConfig.host}/${mongodbConfig.options}`;
+
+console.log("Error in mongoURL", mongoURL);
+mongoose.connect(mongoURL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
