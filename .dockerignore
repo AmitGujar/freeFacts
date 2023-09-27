@@ -1,0 +1,17 @@
+node-modules/
+
+.deployment
+
+Procfile
+
+.env
+
+.git
+
+.github
+
+.vscode
+
+LICENSE
+
+*.md
