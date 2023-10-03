@@ -5,18 +5,11 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: CI started successfully!
-  displayName: 'Run a one-line script'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
-
-- task: Bash@3
-  inputs:
-    filePath: 'manifests/kubelinter.sh'
-  displayName: "Kubelint"
+# - task: Bash@3
+#   inputs:
+#     filePath: 'manifests/kubelinter.sh'
+#   displayName: "Kubelint"
 
 - task: Docker@2
   inputs:
@@ -34,6 +27,12 @@ steps:
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
   displayName: "Copy files"
 
+# - task: PublishBuildArtifacts@1
+#   inputs:
+#     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+#     ArtifactName: 'drop'
+#     publishLocation: 'Container'
+#   displayName: "Publishing artifact"
 
 - task: Bash@3
   inputs:
@@ -67,8 +66,9 @@ steps:
     useConfigurationFile: true
     configuration: 'manifests/configs/secret.yaml'
     secretType: 'dockerRegistry'
-    containerRegistryType: 'Azure Container Registry'
+    # containerRegistryType: 'Azure Container Registry'
   displayName: "Setting up secret"
+
 
 - task: replacetokens@5
   inputs:
@@ -97,3 +97,13 @@ steps:
     namespace: 'default'
     manifests: 'manifests/rollingdeploy.yaml'
   displayName: "Deployment"
+
+- task: Kubernetes@1
+  inputs:
+    connectionType: 'Kubernetes Service Connection'
+    kubernetesServiceEndpoint: 'AKS_Connection'
+    namespace: 'default'
+    command: 'apply'
+    useConfigurationFile: true
+    configuration: 'manifests/service.yaml'
+  displayName: "Exposing Service"
