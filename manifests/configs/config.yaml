@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: freefacts-config
+  labels:
+    app: freefacts-deployment
+data:
+  mongodb-host: "facts-data.qznzj.mongodb.net"
+  mongodb-options: "facts_data?retryWrites=true&w=majority"

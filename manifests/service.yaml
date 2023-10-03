@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name:  freefacts-service
+spec:
+  selector:
+    app:  freefacts-deployment
+  type:  LoadBalancer
+  ports:
+  - name:  http
+    port:  80
+    targetPort:  3000

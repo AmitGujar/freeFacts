@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: freefacts-deployment
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: freefacts-deployment
+  template:
+    metadata:
+      labels:
+        app: freefacts-deployment
+    spec:
+      containers:
+        - name: freefacts-deployment
+          image: amitgujar/freefacts:_latest_
+          ports:
+            - containerPort: 3000
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          env:
+            - name: MONGODB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: freefacts-config
+                  key: mongodb-host
+            - name: MONGODB_OPTIONS
+              valueFrom:
+                configMapKeyRef:
+                  name: freefacts-config
+                  key: mongodb-options
+            - name: MONGODB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: freefacts-secrets
+                  key: username
+            - name: MONGODB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: freefacts-secrets
+                  key: password
