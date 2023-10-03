@@ -6,10 +6,10 @@ pool:
 
 steps:
 
-# - task: Bash@3
-#   inputs:
-#     filePath: 'manifests/kubelinter.sh'
-#   displayName: "Kubelint"
+- task: Bash@3
+  inputs:
+    filePath: 'manifests/kubelinter.sh'
+  displayName: "Kubelint"
 
 - task: Docker@2
   inputs:
@@ -26,13 +26,6 @@ steps:
     Contents: '**'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
   displayName: "Copy files"
-
-# - task: PublishBuildArtifacts@1
-#   inputs:
-#     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-#     ArtifactName: 'drop'
-#     publishLocation: 'Container'
-#   displayName: "Publishing artifact"
 
 - task: Bash@3
   inputs:
