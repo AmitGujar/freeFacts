@@ -1,0 +1,99 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: CI started successfully!
+  displayName: 'Run a one-line script'
+
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
+
+- task: Bash@3
+  inputs:
+    filePath: 'manifests/kubelinter.sh'
+  displayName: "Kubelint"
+
+- task: Docker@2
+  inputs:
+    containerRegistry: 'DockerHub Registry'
+    repository: 'amitgujar/freefacts'
+    command: 'buildAndPush'
+    Dockerfile: 'Dockerfile'
+    tags: 'pipeline-$(Build.BuildId)'
+  displayName: "Publishing image on docker registry"
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: 'manifests'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+  displayName: "Copy files"
+
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      dockertag=pipeline-$(Build.BuildId)
+      
+      echo $dockertag
+      
+      echo "##vso[task.setvariable variable=latest]$dockertag"
+  displayName: "Generating env variable"
+
+- task: Kubernetes@1
+  inputs:
+    connectionType: 'Kubernetes Service Connection'
+    kubernetesServiceEndpoint: 'AKS_Connection'
+    namespace: 'default'
+    command: 'apply'
+    useConfigurationFile: true
+    configuration: 'manifests/configs/config.yaml'
+    secretType: 'dockerRegistry'
+    # containerRegistryType: 'Azure Container Registry'
+  displayName: "Creating configmap"
+    
+- task: Kubernetes@1
+  inputs:
+    connectionType: 'Kubernetes Service Connection'
+    kubernetesServiceEndpoint: 'AKS_Connection'
+    namespace: 'default'
+    command: 'apply'
+    useConfigurationFile: true
+    configuration: 'manifests/configs/secret.yaml'
+    secretType: 'dockerRegistry'
+    containerRegistryType: 'Azure Container Registry'
+  displayName: "Setting up secret"
+
+- task: replacetokens@5
+  inputs:
+    rootDirectory: 'manifests'
+    targetFiles: 'rollingdeploy.yaml'
+    encoding: 'auto'
+    tokenPattern: 'custom'
+    tokenPrefix: '_'
+    tokenSuffix: '_'
+    writeBOM: true
+    escapeType: 'none'
+    actionOnMissing: 'warn'
+    keepToken: false
+    actionOnNoFiles: 'continue'
+    enableTransforms: false
+    enableRecursion: false
+    useLegacyPattern: false
+    enableTelemetry: true
+  displayName: "Replacing tokens"
+    
+- task: KubernetesManifest@1
+  inputs:
+    action: 'deploy'
+    connectionType: 'kubernetesServiceConnection'
+    kubernetesServiceConnection: 'AKS_Connection'
+    namespace: 'default'
+    manifests: 'manifests/rollingdeploy.yaml'
+  displayName: "Deployment"
