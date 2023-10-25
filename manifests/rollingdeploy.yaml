@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: freefacts-deployment
+  namespace: default
 spec:
   replicas: 3
   strategy:
@@ -17,6 +18,18 @@ spec:
       labels:
         app: freefacts-deployment
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - freefacts-deployment
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: freefacts-deployment
           image: amitgujar/freefacts:_latest_
