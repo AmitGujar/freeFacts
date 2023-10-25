@@ -6,6 +6,20 @@ pool:
 
 steps:
 
+- task: SonarQubePrepare@5
+  inputs:
+    SonarQube: 'SonarQube_connect'
+    scannerMode: 'CLI'
+    configMode: 'file'
+
+- task: SonarQubeAnalyze@5
+  inputs:
+    jdkversion: 'JAVA_HOME_11_X64'
+
+- task: SonarQubePublish@5
+  inputs:
+    pollingTimeoutSec: '300'
+
 - task: Bash@3
   inputs:
     filePath: 'manifests/kubelinter.sh'
@@ -26,6 +40,13 @@ steps:
     Contents: '**'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
   displayName: "Copy files"
+
+# - task: PublishBuildArtifacts@1
+#   inputs:
+#     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+#     ArtifactName: 'drop'
+#     publishLocation: 'Container'
+#   displayName: "Publishing artifact"
 
 - task: Bash@3
   inputs:
@@ -100,3 +121,14 @@ steps:
     useConfigurationFile: true
     configuration: 'manifests/service.yaml'
   displayName: "Exposing Service"
+
+- task: Kubernetes@1
+  inputs:
+    connectionType: 'Kubernetes Service Connection'
+    kubernetesServiceEndpoint: 'AKS_Connection'
+    namespace: 'default'
+    command: 'apply'
+    useConfigurationFile: true
+    configuration: 'manifests/hautoscaling.yaml'
+    secretType: 'dockerRegistry'
+    # containerRegistryType: 'Azure Container Registry'
